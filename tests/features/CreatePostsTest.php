@@ -29,6 +29,7 @@ class CreatePostsTest extends FeatureTestCase
             'content' => $content,
             'pending' => $pending,
             'user_id' => $user->id,
+            'slug' => 'esta-es-una-pregunta',
         ]);
 
         // verificamos si fue redirigido a otra url
