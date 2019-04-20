@@ -37,7 +37,14 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
 
-        $this->mapWebRoutes();
+        // antes: $this->mapWebRoutes();
+        // Ahora:
+        // Solo rutas publicas de la aplicación
+        $this->mapPublicRoutes();
+        // Solo rutas usuarios anonimos de la aplicación
+        $this->mapGuestRoutes();
+        // y para usuarios conectados
+        $this->mapAuthRoutes();
 
         //
     }
@@ -49,13 +56,33 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function mapWebRoutes()
+    protected function mapPublicRoutes()
     {
         Route::group([
             'middleware' => 'web',
             'namespace' => $this->namespace,
         ], function ($router) {
-            require base_path('routes/web.php');
+            require base_path('routes/public.php');
+        });
+    }
+
+    protected function mapGuestRoutes()
+    {
+        Route::group([
+            'middleware' => ['web', 'guest'],
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/guest.php');
+        });
+    }
+
+    protected function mapAuthRoutes()
+    {
+        Route::group([
+            'middleware' => ['web', 'auth'],
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/auth.php');
         });
     }
 

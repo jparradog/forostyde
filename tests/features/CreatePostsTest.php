@@ -35,4 +35,14 @@ class CreatePostsTest extends FeatureTestCase
         // $this->seeInElement('hi', $title); //verificar etiqueta h1 si tiene un texto
         $this->see($title); //solo ver el texto
     }
+
+    public function test_creating_a_post_requires_autentication()
+    {
+
+        //When - Cuando
+        $this->Visit(route('posts.create'));
+
+        // Then - Entonces
+        $this->seePageIs(route('login'));
+    }
 }
