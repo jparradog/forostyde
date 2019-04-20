@@ -39,12 +39,12 @@ class RouteServiceProvider extends ServiceProvider
 
         // antes: $this->mapWebRoutes();
         // Ahora:
-        // Solo rutas publicas de la aplicación
-        $this->mapPublicRoutes();
         // Solo rutas usuarios anonimos de la aplicación
         $this->mapGuestRoutes();
         // y para usuarios conectados
         $this->mapAuthRoutes();
+        // Solo rutas publicas de la aplicación
+        $this->mapPublicRoutes();
 
         //
     }
