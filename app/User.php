@@ -38,6 +38,14 @@ class User extends Authenticatable
         return $this->belongsToMany(Post::class, 'subscriptions'); // muchos a muchos
     }
 
+    public function createPost(array $data)
+    {
+        $post = new Post($data);
+        $this->posts()->save($post);
+        $this->subscribeTo($post);
+        return $post;
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class); //Un usuario tiene varios comentarios
@@ -52,7 +60,12 @@ class User extends Authenticatable
     //
     public function subscribeTo(Post $post)
     {
-        $this->subscriptions()->attach($post);
+        $this->subscriptions()->attach($post); //unir
+    }
+
+    public function unsubscribeFrom(Post $post)
+    {
+        $this->subscriptions()->detach($post); //separar
     }
 
     /**

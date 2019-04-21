@@ -2,6 +2,8 @@
 /**
  * summary
  */
+use App\Post;
+
 class CreatePostsTest extends FeatureTestCase
 {
     /**
@@ -32,9 +34,17 @@ class CreatePostsTest extends FeatureTestCase
             'slug' => 'esta-es-una-pregunta',
         ]);
 
+        $post = Post::first();
+        // Test the author is suscribed automatically to the post.
+        $this->seeInDatabase('subscriptions', [
+            'user_id' => $user->id,
+            'post_id' => $post->id,
+        ]);
+
         // verificamos si fue redirigido a otra url
         // $this->seeInElement('hi', $title); //verificar etiqueta h1 si tiene un texto
-        $this->see($title); //solo ver el texto
+        // $this->see($title); //solo ver el texto
+        $this->seePageIs($post->url);
     }
 
     public function test_creating_a_post_requires_autentication()
