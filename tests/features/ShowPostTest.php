@@ -1,5 +1,8 @@
 <?php
 
+use App\Post;
+use App\User;
+
 class ShowPostTest extends FeatureTestCase
 {
 
@@ -9,15 +12,31 @@ class ShowPostTest extends FeatureTestCase
         $user = $this->defaultUser([
             'name' => 'John Parrado',
         ]);
-        $post = factory(\App\Post::class)->make([ //no lo creamos en la bd sino virtualmente
+        $post = $this->createPost([
             'title' => 'Este es el titulo del post',
-            'content' => 'Este es el contenido del post'
+            'content' => 'Este es el contenido del post',
+            'user_id' => $user->id,
         ]);
-        $user->posts()->save($post);
+
+        // dd(User::all()->toArray());
+
         // When
-        $this->visit(route('posts.show', $post))
+        $this->visit($post->url)
             ->seeInElement('h1', $post->title)
             ->see($post->content)
-            ->see($user->name);
+            ->see('John Parrado');
+    }
+
+    function test_old_urls_are_redirected()
+    {
+        // Having
+        $post = $this->createPost([
+            'title' => 'Old title',
+        ]);
+
+        $url = $post->url;
+        $post->update(['title' => 'New title']);
+        $this->visit($url)
+            ->seePageIs($post->url);
     }
 }

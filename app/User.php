@@ -31,4 +31,23 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class); //un usuario puede tener muchos posts
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class); //Un usuario tiene varios comentarios
+    }
+
+    /**
+     * Guardar un comentario sabiendo el post al que pertenece y desde luego el usuario que lo creó
+     * @param Post $post
+     * @param $message
+     */
+    public function comment(Post $post, $message)
+    {
+        $comment = new Comment([
+            'comment' => $message,
+            'post_id' => $post->id,
+        ]);
+        $this->comments()->save($comment);
+    }
 }
