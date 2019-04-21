@@ -33,9 +33,26 @@ class User extends Authenticatable
         return $this->hasMany(Post::class); //un usuario puede tener muchos posts
     }
 
+    public function subscriptions()
+    {
+        return $this->belongsToMany(Post::class, 'subscriptions'); // muchos a muchos
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class); //Un usuario tiene varios comentarios
+    }
+
+    //Verificar si un usuario está subscrito a un post
+    public function isSubscribedTo(Post $post)
+    {
+        return $this->subscriptions()->where('post_id', $post->id)->count() > 0;
+    }
+
+    //
+    public function subscribeTo(Post $post)
+    {
+        $this->subscriptions()->attach($post);
     }
 
     /**
