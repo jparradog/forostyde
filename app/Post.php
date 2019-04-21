@@ -2,8 +2,9 @@
 
 namespace App;
 
-use Illuminate\Support\Str;
+use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Post extends Model
 {
@@ -41,5 +42,10 @@ class Post extends Model
     public function getUrlAttribute() //creamos un atributo dinamico url
     {
         return route('posts.show', [$this->id, $this->slug]);
+    }
+
+    public function getSafeHtmlContentAttribute()
+    {
+        return Markdown::convertToHtml(e($this->content));
     }
 }
