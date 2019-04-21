@@ -27,6 +27,11 @@ class Post extends Model
         return $this->hasMany(Comment::class); //Un post tiene varios comentarios
     }
 
+    public function subscribers()
+    {
+        return $this->belongsToMany(User::class, 'subscriptions');
+    }
+
     // Ultimos comentarios
     public function latestComments()
     {
