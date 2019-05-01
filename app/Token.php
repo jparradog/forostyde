@@ -1,8 +1,9 @@
 <?php
 namespace App;
 use App\Mail\TokenMail;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Database\Eloquent\Model;
+
 class Token extends Model
 {
     protected $guarded = [];
@@ -10,6 +11,12 @@ class Token extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getRouteKeyName()
+    {
+        return 'token';
+    }
+
     public static function generateFor(User $user)
     {
         $token = new static;
