@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class Post extends Model
 {
     protected $fillable = [
-        'title', 'content',
+        'title', 'content', 'category_id'
     ];
 
     // obligamos a que en bd sea de tipo boolean
@@ -30,6 +30,11 @@ class Post extends Model
     public function subscribers()
     {
         return $this->belongsToMany(User::class, 'subscriptions');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 
     // Ultimos comentarios

@@ -1,65 +1,46 @@
 <?php
-/**
- * summary
- */
 use App\Post;
-
 class CreatePostsTest extends FeatureTestCase
 {
-    /**
-     * summary
-     */
     public function test_a_user_create_a_post()
     {
-        // having - Teniendo
-        $user = $this->defaultUser();
+        // Having
         $title = 'Esta es una pregunta';
         $content = 'Este es el contenido';
-        $pending = true;
-
-        $this->actingAs($user) //simula que el usuario esté conectado
-        //When - Cuando
-             ->Visit(route('posts.create')) //visitamos la ruta
-             ->type($title, 'title') //Escribir en un campo
-             ->type($content, 'content')
-             ->press('Publicar'); // presionar boton
-
-        // Then - Entonces
-        // ver en BD
+        $this->actingAs($user = $this->defaultUser());
+        $category = factory(\App\Category::class)->create();
+        // When
+        $this->visit(route('posts.create'))
+            ->type($title, 'title')
+            ->type($content, 'content')
+            ->select($category->id, 'category_id')
+            ->press('Publicar');
+        // Then
         $this->seeInDatabase('posts', [
             'title' => $title,
             'content' => $content,
-            'pending' => $pending,
+            'pending' => true,
             'user_id' => $user->id,
             'slug' => 'esta-es-una-pregunta',
+            'category_id' => $category->id,
         ]);
-
         $post = Post::first();
         // Test the author is suscribed automatically to the post.
         $this->seeInDatabase('subscriptions', [
             'user_id' => $user->id,
             'post_id' => $post->id,
         ]);
-
-        // verificamos si fue redirigido a otra url
-        // $this->seeInElement('hi', $title); //verificar etiqueta h1 si tiene un texto
-        // $this->see($title); //solo ver el texto
+        // Test a user is redirected to the posts details after creating it.
         $this->seePageIs($post->url);
     }
-
-    public function test_creating_a_post_requires_autentication()
+    function test_creating_a_post_requires_authentication()
     {
-
-        //When - Cuando
-        $this->Visit(route('posts.create'))
-
-        // Then - Entonces
-        ->seePageIs(route('token'));
+        $this->visit(route('posts.create'))
+            ->seePageIs(route('token'));
     }
-
-    function test_create_post_form_validation($value='')
+    function test_create_post_form_validation()
     {
-        $this->actingAs($this->defaultUser()) //conectandonos
+        $this->actingAs($this->defaultUser())
             ->visit(route('posts.create'))
             ->press('Publicar')
             ->seePageIs(route('posts.create'))
